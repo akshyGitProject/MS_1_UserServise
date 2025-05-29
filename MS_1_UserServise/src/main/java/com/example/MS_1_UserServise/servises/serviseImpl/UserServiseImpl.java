@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserServiseImpl implements UserServise {
@@ -19,7 +20,12 @@ public class UserServiseImpl implements UserServise {
 
     @Override
     public UserDto saveUser(UserDto userDto) {
+        //Creating unique UserId:
+        String RandomId= UUID.randomUUID().toString();
         User user=DtoToUser(userDto);
+
+        user.setUserId(RandomId);
+
         User save=userRepo.save(user);
 
         return userToDto(save);

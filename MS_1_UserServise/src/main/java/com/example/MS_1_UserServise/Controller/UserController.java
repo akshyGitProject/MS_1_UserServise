@@ -41,7 +41,7 @@ public class UserController {
 
     }
 
-    @PostMapping("/{userId}")
+    @PutMapping ("/{userId}")
     public  ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto,@PathVariable String userId){
         UserDto userDto1=userServise.updateUser(userDto,userId);
 

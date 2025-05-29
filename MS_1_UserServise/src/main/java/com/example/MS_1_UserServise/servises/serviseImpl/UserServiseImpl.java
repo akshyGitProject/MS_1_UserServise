@@ -2,11 +2,13 @@ package com.example.MS_1_UserServise.servises.serviseImpl;
 
 import com.example.MS_1_UserServise.DTO.UserDto;
 import com.example.MS_1_UserServise.entities.User;
+import com.example.MS_1_UserServise.exceptions.ResourseNotFoundException;
 import com.example.MS_1_UserServise.repositories.UserRepo;
 import com.example.MS_1_UserServise.servises.UserServise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,27 +19,54 @@ public class UserServiseImpl implements UserServise {
 
     @Override
     public UserDto saveUser(UserDto userDto) {
-        return null;
+        User user=DtoToUser(userDto);
+        User save=userRepo.save(user);
+
+        return userToDto(save);
     }
 
     @Override
     public List<UserDto> getAllUser() {
-        return List.of();
+
+        List<User> patients=userRepo.findAll();
+        List<UserDto> userDtos=new ArrayList<>();
+
+        for(User user:patients){
+            UserDto userDto=userToDto(user);
+            userDtos.add(userDto);
+        }
+
+        return userDtos;
+
     }
 
     @Override
     public UserDto getUser(String userId) {
-        return null;
+        User user=userRepo.findById(userId).
+                orElseThrow(()->new ResourseNotFoundException("User is NotPresent"));
+        return userToDto(user);
     }
 
     @Override
     public UserDto updateUser(UserDto userDto, String userId) {
-        return null;
+        User user=userRepo.findById(userId).
+                orElseThrow(()->new ResourseNotFoundException("User not present"));
+
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+        user.setAbout(userDto.getAbout());
+
+        User saved=userRepo.save(user);
+        return userToDto(saved);
     }
 
     @Override
     public UserDto deleteUser(String userId) {
-        return null;
+        User user=userRepo.findById(userId).
+                orElseThrow(()->new ResourseNotFoundException("User is NotPresent"));
+        userRepo.delete(user);
+
+        return userToDto(user);
     }
     //User to UserDto
     public UserDto userToDto(User user){
